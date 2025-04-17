@@ -1,4 +1,33 @@
-<!DOCTYPE html>
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row =>
+                    row.some(cell => cell !== '' && cell !== null && cell !== undefined)
+                );
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,9 +45,6 @@
 
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
-
-    <!-- Placeholder for Flutterwave (uncomment when integrating) -->
-    <!-- <script src="https://checkout.flutterwave.com/v3.js"></script> -->
 
     <style>
         /* ===== Core Styles ===== */
@@ -141,22 +167,22 @@
 
         .safety-badge {
             position: absolute;
-            top: 10px;
+            top: 10px; /* Moved to very top-right corner */
             right: 10px;
             background: rgba(255,255,255,0.9);
             color: var(--secondary);
-            padding: 6px 12px;
-            border-radius: 16px;
-            font-size: 0.8rem;
+            padding: 6px 12px; /* Smaller padding */
+            border-radius: 16px; /* Smaller radius */
+            font-size: 0.8rem; /* Smaller font */
             font-weight: 600;
             display: flex;
             align-items: center;
         }
 
         .safety-badge i {
-            margin-right: 6px;
+            margin-right: 6px; /* Adjusted spacing */
             color: var(--primary);
-            font-size: 0.9rem;
+            font-size: 0.9rem; /* Smaller icon */
         }
 
         /* ===== Contact Bar ===== */
@@ -966,7 +992,7 @@
 
             .safety-badge {
                 position: static;
-                margin: 10px auto;
+                margin: 10px auto; /* Centered on mobile */
                 width: fit-content;
             }
 
@@ -1000,6 +1026,7 @@
     </style>
 </head>
 <body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'931c872dfd3568ed',t:'MTc0NDg5OTI1OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
     <!-- ===== Header ===== -->
     <header>
         <div class="header-content">
@@ -1026,7 +1053,7 @@
             </div>
             <div class="contact-item">
                 <i class="fas fa-envelope"></i>
-                <span><a href="mailto:info@gasiontransfers.com">info@gasiontransfers.com</a></span>
+                <span>gasionsam@gmail.com</span>
             </div>
             <div class="contact-item">
                 <i class="fas fa-map-marker-alt"></i>
@@ -1250,17 +1277,11 @@
                         <div class="form-group">
                             <label for="pickupLocation" class="form-label">Pickup Location</label>
                             <input type="text" id="pickupLocation" class="form-control" placeholder="Enter address or landmark" required>
-                            <button type="button" class="location-btn" onclick="toggleMarkerSetting('pickup')">
-                                <i class="fas fa-map-marker-alt"></i> Set on Map
-                            </button>
                         </div>
 
                         <div class="form-group">
                             <label for="destination" class="form-label">Destination</label>
                             <input type="text" id="destination" class="form-control" placeholder="Enter address or landmark" required>
-                            <button type="button" class="location-btn" onclick="toggleMarkerSetting('destination')">
-                                <i class="fas fa-map-marker-alt"></i> Set on Map
-                            </button>
                         </div>
 
                         <div class="form-group">
@@ -1454,12 +1475,12 @@
                 <div class="footer-column">
                     <h3>Our Services</h3>
                     <ul class="footer-links">
-                        <li><a href="#services">Airport Transfers</a></li>
-                        <li><a href="#services">Wedding Transportation</a></li>
-                        <li><a href="#services">Corporate Events</a></li>
-                        <li><a href="#services">City Tours</a></li>
-                        <li><a href="#services">Special Occasions</a></li>
-                        <li><a href="#services">Long Distance</a></li>
+                        <li><a href="#">Airport Transfers</a></li>
+                        <li><a href="#">Wedding Transportation</a></li>
+                        <li><a href="#">Corporate Events</a></li>
+                        <li><a href="#">City Tours</a></li>
+                        <li><a href="#">Special Occasions</a></li>
+                        <li><a href="#">Long Distance</a></li>
                     </ul>
                 </div>
 
@@ -1482,7 +1503,7 @@
                             <i class="fas fa-phone"></i> +256 702 201096
                         </li>
                         <li>
-                            <i class="fas fa-envelope"></i> <a href="mailto:info@gasiontransfers.com">info@gasiontransfers.com</a>
+                            <i class="fas fa-envelope"></i> gasionsam@gmail.com
                         </li>
                         <li>
                             <i class="fas fa-map-marker-alt"></i> Kampala, Uganda
@@ -1504,7 +1525,8 @@
         </div>
     </footer>
 
-    <!-- ===== Leaflet JS and Routing Machine ===== -->
+    <!-- ===== Leaflet JS ===== -->
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
 
@@ -1525,8 +1547,6 @@
         let pickupMarker;
         let destinationMarker;
         let routeControl;
-        let settingPickup = false;
-        let settingDestination = false;
 
         function initMap() {
             // Initialize map centered on Kampala
@@ -1545,20 +1565,23 @@
                     iconSize: [25, 41],
                     iconAnchor: [12, 41]
                 })
-            }).addTo(map).bindPopup('Pickup Location');
+            }).addTo(map);
 
             destinationMarker = L.marker([0.3136, 32.5811], {
                 draggable: true,
                 icon: L.icon({
-                    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+                    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
                     iconSize: [25, 41],
                     iconAnchor: [12, 41]
                 })
-            }).addTo(map).bindPopup('Destination');
+            }).addTo(map);
 
             // Initialize routing control
             routeControl = L.Routing.control({
-                waypoints: [],
+                waypoints: [
+                    L.latLng(0.3136, 32.5811),
+                    L.latLng(0.3136, 32.5811)
+                ],
                 routeWhileDragging: true,
                 show: false,
                 addWaypoints: false,
@@ -1570,133 +1593,37 @@
             }).addTo(map);
 
             // Event listeners for marker movement
-            pickupMarker.on('dragend', updateRoute);
-            destinationMarker.on('dragend', updateRoute);
-
-            // Map click handler for setting markers
-            map.on('click', async function(e) {
-                const latlng = e.latlng;
-                if (settingPickup) {
-                    pickupMarker.setLatLng(latlng);
-                    const reverseGeocode = await reverseGeocode(latlng.lat, latlng.lng);
-                    if (reverseGeocode) {
-                        document.getElementById('pickupLocation').value = reverseGeocode.display_name;
-                    }
-                    settingPickup = false;
-                    document.getElementById('pickupLocation').focus();
-                    updateRoute();
-                } else if (settingDestination) {
-                    destinationMarker.setLatLng(latlng);
-                    const reverseGeocode = await reverseGeocode(latlng.lat, latlng.lng);
-                    if (reverseGeocode) {
-                        document.getElementById('destination').value = reverseGeocode.display_name;
-                    }
-                    settingDestination = false;
-                    document.getElementById('destination').focus();
-                    updateRoute();
-                }
+            pickupMarker.on('dragend', function(e) {
+                updateRoute();
             });
-        }
 
-        // Geocoding function using Nominatim
-        async function geocodeAddress(address) {
-            const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1&countrycodes=ug`;
-            try {
-                const response = await fetch(url, {
-                    headers: { 'User-Agent': 'Gasion Airport Transfers (info@gasiontransfers.com)' }
-                });
-                const data = await response.json();
-                if (data.length > 0) {
-                    return {
-                        lat: parseFloat(data[0].lat),
-                        lon: parseFloat(data[0].lon),
-                        display_name: data[0].display_name
-                    };
-                }
-                throw new Error('Address not found');
-            } catch (error) {
-                console.error('Geocoding error:', error);
-                alert('Could not find the address. Please try a more specific location.');
-                return null;
-            }
-        }
-
-        // Reverse geocoding to get address from coordinates
-        async function reverseGeocode(lat, lon) {
-            const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
-            try {
-                const response = await fetch(url, {
-                    headers: { 'User-Agent': 'Gasion Airport Transfers (info@gasiontransfers.com)' }
-                });
-                const data = await response.json();
-                return data.display_name ? { display_name: data.display_name } : null;
-            } catch (error) {
-                console.error('Reverse geocoding error:', error);
-                return null;
-            }
-        }
-
-        // Autocomplete for address inputs
-        function addAutocomplete(inputId) {
-            const input = document.getElementById(inputId);
-            input.addEventListener('input', async function() {
-                const query = input.value;
-                if (query.length < 3) return;
-
-                const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&countrycodes=ug`;
-                try {
-                    const response = await fetch(url, {
-                        headers: { 'User-Agent': 'Gasion Airport Transfers (info@gasiontransfers.com)' }
-                    });
-                    const data = await response.json();
-
-                    // Remove existing datalist
-                    let datalist = document.getElementById(`${inputId}-datalist`);
-                    if (datalist) datalist.remove();
-
-                    // Create new datalist
-                    datalist = document.createElement('datalist');
-                    datalist.id = `${inputId}-datalist`;
-                    data.forEach(item => {
-                        const option = document.createElement('option');
-                        option.value = item.display_name;
-                        datalist.appendChild(option);
-                    });
-                    input.after(datalist);
-                    input.setAttribute('list', `${inputId}-datalist`);
-                } catch (error) {
-                    console.error('Autocomplete error:', error);
-                }
+            destinationMarker.on('dragend', function(e) {
+                updateRoute();
             });
         }
 
         // Set location from quick buttons
-        async function setLocation(type, location) {
+        function setLocation(type, location) {
             const input = type === 'pickup' ? 'pickupLocation' : 'destination';
             document.getElementById(input).value = location;
 
-            const coords = await geocodeAddress(location);
-            if (coords) {
-                if (type === 'pickup') {
-                    pickupMarker.setLatLng([coords.lat, coords.lon]);
-                    map.panTo([coords.lat, coords.lon]);
-                } else {
-                    destinationMarker.setLatLng([coords.lat, coords.lon]);
-                    map.panTo([coords.lat, coords.lon]);
-                }
-                updateRoute();
+            // In a real app, you would geocode the address here
+            // For demo, we'll just move the marker slightly
+            if (type === 'pickup') {
+                pickupMarker.setLatLng([
+                    0.3136 + (Math.random() * 0.1 - 0.05),
+                    32.5811 + (Math.random() * 0.1 - 0.05)
+                ]);
+            } else {
+                destinationMarker.setLatLng([
+                    0.3136 + (Math.random() * 0.1 - 0.05),
+                    32.5811 + (Math.random() * 0.1 - 0.05)
+                ]);
             }
         }
 
-        // Toggle marker setting on map
-        function toggleMarkerSetting(type) {
-            settingPickup = type === 'pickup';
-            settingDestination = type === 'destination';
-            alert(`Click on the map to set the ${type} location`);
-        }
-
         // Calculate route
-        async function calculateRoute() {
+        function calculateRoute() {
             const pickup = document.getElementById('pickupLocation').value;
             const destination = document.getElementById('destination').value;
             const phone = document.getElementById('phone').value;
@@ -1720,28 +1647,18 @@
             btn.querySelector('.btn-text').style.display = 'none';
             btn.querySelector('.btn-spinner').style.display = 'inline-block';
 
-            try {
-                const pickupCoords = await geocodeAddress(pickup);
-                const destCoords = await geocodeAddress(destination);
+            // Simulate API call delay
+            setTimeout(() => {
+                updateRoute();
 
-                if (pickupCoords && destCoords) {
-                    pickupMarker.setLatLng([pickupCoords.lat, pickupCoords.lon]);
-                    destinationMarker.setLatLng([destCoords.lat, destCoords.lon]);
-                    updateRoute();
-                    map.fitBounds([
-                        [pickupCoords.lat, pickupCoords.lon],
-                        [destCoords.lat, destCoords.lon]
-                    ]);
-                }
-            } catch (error) {
-                console.error(error);
-            } finally {
                 // Hide loading state
                 btn.disabled = false;
                 btn.querySelector('.btn-text').style.display = 'inline-block';
                 btn.querySelector('.btn-spinner').style.display = 'none';
+
+                // Enable book now button
                 document.getElementById('bookNowBtn').disabled = false;
-            }
+            }, 1500);
         }
 
         // Update route on map
@@ -1754,7 +1671,7 @@
                 L.latLng(destPos.lat, destPos.lng)
             ]);
 
-            // Calculate distance (Haversine formula)
+            // Calculate distance (simplified for demo)
             const distance = calculateDistance(
                 [pickupPos.lat, pickupPos.lng],
                 [destPos.lat, destPos.lng]
@@ -1809,51 +1726,6 @@
             return /^(\+?256|0)?[7]\d{8}$/.test(phone);
         }
 
-        // Form validation
-        document.getElementById('transportForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const fullName = document.getElementById('fullName').value;
-            const phone = document.getElementById('phone').value;
-            const email = document.getElementById('email').value;
-            const serviceType = document.getElementById('serviceType').value;
-            const passengers = document.getElementById('passengers').value;
-            const pickupDate = document.getElementById('pickupDate').value;
-            const pickupTime = document.getElementById('pickupTime').value;
-            const pickupLocation = document.getElementById('pickupLocation').value;
-            const destination = document.getElementById('destination').value;
-
-            if (!fullName) {
-                alert('Please enter your full name');
-                return;
-            }
-            if (!validatePhone(phone)) {
-                document.getElementById('phoneError').style.display = 'block';
-                return;
-            }
-            if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                alert('Please enter a valid email address');
-                return;
-            }
-            if (!serviceType) {
-                alert('Please select a service type');
-                return;
-            }
-            if (passengers < 1) {
-                alert('Please enter a valid number of passengers');
-                return;
-            }
-            if (!pickupDate || !pickupTime) {
-                alert('Please select pickup date and time');
-                return;
-            }
-            if (!pickupLocation || !destination) {
-                alert('Please enter both pickup and destination locations');
-                return;
-            }
-
-            calculateRoute();
-        });
-
         // ===== Payment Modal =====
         function openPaymentModal() {
             if (!window.bookingDetails) {
@@ -1874,9 +1746,6 @@
             // Show modal
             document.getElementById('paymentModal').style.display = 'flex';
             document.body.style.overflow = 'hidden';
-
-            // Show mobile money form by default
-            selectPayment('mobile');
         }
 
         function closePaymentModal() {
@@ -1885,9 +1754,11 @@
         }
 
         function selectPayment(method) {
+            // Hide all forms
             document.getElementById('mobileMoneyForm').style.display = 'none';
             document.getElementById('cardForm').style.display = 'none';
 
+            // Show selected form
             if (method === 'mobile') {
                 document.getElementById('mobileMoneyForm').style.display = 'block';
             } else if (method === 'card') {
@@ -1895,7 +1766,7 @@
             }
         }
 
-        async function processMobilePayment() {
+        function processMobilePayment() {
             const provider = document.getElementById('mobileProvider').value;
             const number = document.getElementById('mobileNumber').value;
 
@@ -1909,51 +1780,18 @@
                 return;
             }
 
-            // Simulate payment (replace with Flutterwave integration)
+            // Show processing
             alert(`Payment request sent to ${provider} for ${window.bookingDetails.formattedPrice} UGX. Please complete the payment on your phone.`);
 
-            setTimeout(async () => {
+            // Simulate payment processing
+            setTimeout(() => {
                 alert('Payment confirmed! Your booking is complete. We will send you confirmation details shortly.');
-                await sendBookingToBackend();
                 closePaymentModal();
                 resetForm();
             }, 2000);
-
-            /* Uncomment for Flutterwave integration
-            const email = document.getElementById('email').value || 'no-email@gasiontransfers.com';
-            try {
-                const response = await FlutterwaveCheckout({
-                    public_key: 'YOUR_FLUTTERWAVE_PUBLIC_KEY',
-                    tx_ref: `GASON-${Date.now()}`,
-                    amount: window.bookingDetails.price,
-                    currency: 'UGX',
-                    payment_options: 'mobilemoneyuganda',
-                    customer: {
-                        email: email,
-                        phone_number: number,
-                        name: document.getElementById('fullName').value
-                    },
-                    customizations: {
-                        title: 'Gasion Airport Transfers',
-                        description: `Payment for ${window.bookingDetails.service} from ${window.bookingDetails.from} to ${window.bookingDetails.to}`,
-                        logo: 'https://your-logo-url.com/logo.png'
-                    }
-                });
-
-                if (response.status === 'successful') {
-                    alert('Payment successful! Your booking is complete.');
-                    await sendBookingToBackend();
-                    closePaymentModal();
-                    resetForm();
-                }
-            } catch (error) {
-                console.error('Payment error:', error);
-                alert('Payment failed. Please try again.');
-            }
-            */
         }
 
-        async function processCardPayment() {
+        function processCardPayment() {
             const cardNumber = document.getElementById('cardNumber').value;
             const expiry = document.getElementById('expiryDate').value;
             const cvv = document.getElementById('cvv').value;
@@ -1964,6 +1802,7 @@
                 return;
             }
 
+            // Simple validation
             if (!/^\d{16}$/.test(cardNumber.replace(/\s/g, ''))) {
                 alert('Please enter a valid 16-digit card number');
                 return;
@@ -1974,75 +1813,15 @@
                 return;
             }
 
-            // Simulate payment (replace with Flutterwave integration)
+            // Show processing
             alert(`Processing card payment for ${window.bookingDetails.formattedPrice} UGX...`);
 
-            setTimeout(async () => {
+            // Simulate payment processing
+            setTimeout(() => {
                 alert('Payment successful! Your booking is complete. We will send you confirmation details shortly.');
-                await sendBookingToBackend();
                 closePaymentModal();
                 resetForm();
             }, 2000);
-
-            /* Uncomment for Flutterwave integration
-            const email = document.getElementById('email').value || 'no-email@gasiontransfers.com';
-            try {
-                const response = await FlutterwaveCheckout({
-                    public_key: 'YOUR_FLUTTERWAVE_PUBLIC_KEY',
-                    tx_ref: `GASON-${Date.now()}`,
-                    amount: window.bookingDetails.price,
-                    currency: 'UGX',
-                    payment_options: 'card',
-                    customer: {
-                        email: email,
-                        phone_number: document.getElementById('phone').value,
-                        name: name
-                    },
-                    customizations: {
-                        title: 'Gasion Airport Transfers',
-                        description: `Payment for ${window.bookingDetails.service} from ${window.bookingDetails.from} to ${window.bookingDetails.to}`,
-                        logo: 'https://your-logo-url.com/logo.png'
-                    }
-                });
-
-                if (response.status === 'successful') {
-                    alert('Payment successful! Your booking is complete.');
-                    await sendBookingToBackend();
-                    closePaymentModal();
-                    resetForm();
-                }
-            } catch (error) {
-                console.error('Payment error:', error);
-                alert('Payment failed. Please try again.');
-            }
-            */
-        }
-
-        // Send booking to backend
-        async function sendBookingToBackend() {
-            try {
-                const response = await fetch('/api/bookings', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        fullName: document.getElementById('fullName').value,
-                        phone: document.getElementById('phone').value,
-                        email: document.getElementById('email').value,
-                        serviceType: document.getElementById('serviceType').value,
-                        passengers: document.getElementById('passengers').value,
-                        pickupDate: document.getElementById('pickupDate').value,
-                        pickupTime: document.getElementById('pickupTime').value,
-                        pickupLocation: document.getElementById('pickupLocation').value,
-                        destination: document.getElementById('destination').value,
-                        specialRequests: document.getElementById('specialRequests').value,
-                        bookingDetails: window.bookingDetails
-                    })
-                });
-                if (!response.ok) throw new Error('Failed to save booking');
-            } catch (error) {
-                console.error('Backend error:', error);
-                alert('Booking saved locally, but there was an issue syncing with our servers. We will contact you soon.');
-            }
         }
 
         // Format date for display
@@ -2071,6 +1850,23 @@
                 closePaymentModal();
             }
         });
+
+        // Initialize the map when page loads
+        window.onload = function() {
+            initMap();
+
+            // Set today's date as default
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('pickupDate').value = today;
+            document.getElementById('pickupDate').min = today;
+
+            // Set default time to next hour
+            const nextHour = new Date();
+            nextHour.setHours(nextHour.getHours() + 1);
+            document.getElementById('pickupTime').value =
+                nextHour.getHours().toString().padStart(2, '0') + ':' +
+                nextHour.getMinutes().toString().padStart(2, '0');
+        };
 
         // Robo-Gasion Chatbot Functionality
         const roboToggle = document.getElementById('roboToggle');
@@ -2133,4 +1929,124 @@
             }, 500);
         }
 
-        // Handle user# gasionairportpickup
+        // Handle user input
+        function handleUserInput(input) {
+            let response;
+            let quickReplies = [];
+
+            if (input.includes('hello') || input.includes('hi')) {
+                response = currentLanguage === 'english'
+                    ? "Hello again! What can I assist you with today?"
+                    : "Nkulamusizza! Nsobola okukuyamba ki leero?";
+                quickReplies = currentLanguage === 'english'
+                    ? ["Book airport transfer", "Get price estimate", "Change language"]
+                    : ["Okutambuza ku ddoboozi", "Okutegeeza ssente", "Kyuka olulimi"];
+            }
+            else if (input.includes('book') || input.includes('transfer') || input.includes('okutambuza')) {
+                response = currentLanguage === 'english'
+                    ? "I can help you book a transfer. Please tell me:\n1. Pickup location\n2. Destination\n3. Date and time\n\nOr click 'Quick Book' below to open the booking form."
+                    : "Nsobola okukuyamba okutambuza. Mbuza:\n1. Wano otandise\n2. Ogenda\n3. Ennaku n'essaawa\n\nKoppa 'Quick Book' wansi okuggulawo fomu.";
+                quickReplies = currentLanguage === 'english'
+                    ? ["Quick Book", "Price estimate", "Main menu"]
+                    : ["Quick Book", "Ssente z'otambula", "Ddayo ku menu"];
+            }
+            else if (input.includes('price') || input.includes('estimate') || input.includes('ssente')) {
+                response = currentLanguage === 'english'
+                    ? "Our prices start at 50,000 UGX for airport transfers within Kampala. For an exact quote, I'll need:\n1. Pickup location\n2. Destination\n3. Number of passengers"
+                    : "Ssente zituva ku 50,000 UGX okutambuza okuva ku ddoboozi okutuuka Kampala. Okumanya ssente mbuza:\n1. Wano otandise\n2. Ogenda\n3. Abantu bangi ki";
+                quickReplies = currentLanguage === 'english'
+                    ? ["Entebbe to Kampala", "Kampala to Entebbe", "Other route"]
+                    : ["Entebbe okudda Kampala", "Kampala okudda Entebbe", "Endala"];
+            }
+            else if (input.includes('language') || input.includes('lulimi') || input.includes('kyuka')) {
+                currentLanguage = currentLanguage === 'english' ? 'luganda' : 'english';
+                response = currentLanguage === 'english'
+                    ? "I've switched to English. How can I help?"
+                    : "Nkyusizza olulimi Oluganda. Nsobola okukuyamba ki?";
+                quickReplies = currentLanguage === 'english'
+                    ? ["Book transfer", "Get price", "Main menu"]
+                    : ["Tambuza", "Ssente", "Ddayo ku menu"];
+            }
+            else if (input.includes('status') || input.includes('check') || input.includes('kebejja')) {
+                response = currentLanguage === 'english'
+                    ? "To check your booking status, please provide your:\n1. Booking reference number\n2. Phone number used to book\n\nOr call +256702201096 for immediate assistance."
+                    : "Okukebejja booking yo, mbuza:\n1. Namba y'okukebejja\n2. Namba y'essimu ey'okozesebwa\n\nKoppa +256702201096 obeere n'oyamba bwangu.";
+                quickReplies = currentLanguage === 'english'
+                    ? ["Main menu", "Call support", "Quick book"]
+                    : ["Ddayo ku menu", "Koppa oyamba", "Tambuza bwangu"];
+            }
+            else {
+                response = currentLanguage === 'english'
+                    ? "I'm sorry, I didn't understand that. Here are some things I can help with:"
+                    : "Nsonyiwa, sikyategeerezanga. Wano wammwe ebinkola:";
+                quickReplies = currentLanguage === 'english'
+                    ? ["Book transfer", "Get price", "Change language", "Talk to human"]
+                    : ["Tambuza", "Ssente", "Kyuka olulimi", "Yogera n'omuntu"];
+            }
+
+            addMessage(response, 'bot', quickReplies);
+
+            // Special actions
+            if (input.includes('quick book') || input.includes('book now')) {
+                setTimeout(() => {
+                    document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
+                    roboChatbox.classList.remove('active');
+                }, 500);
+            }
+        }
+
+        // Add message to chat
+        function addMessage(text, sender, quickReplies = []) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', `${sender}-message`);
+            messageDiv.textContent = text;
+            roboMessages.appendChild(messageDiv);
+
+            if (quickReplies.length > 0) {
+                const quickRepliesDiv = document.createElement('div');
+                quickRepliesDiv.classList.add('quick-replies');
+
+                quickReplies.forEach(reply => {
+                    const replyBtn = document.createElement('div');
+                    replyBtn.classList.add('quick-reply');
+                    replyBtn.textContent = reply;
+                    replyBtn.addEventListener('click', () => {
+                        addMessage(reply, 'user');
+                        setTimeout(() => {
+                            handleUserInput(reply.toLowerCase());
+                        }, 500);
+                    });
+                    quickRepliesDiv.appendChild(replyBtn);
+                });
+
+                roboMessages.appendChild(quickRepliesDiv);
+            }
+
+            roboMessages.scrollTop = roboMessages.scrollHeight;
+        }
+
+        // Display initial messages
+        function displayMessages(messages) {
+            messages.forEach(msg => {
+                addMessage(msg.text, msg.sender, msg.quickReplies);
+            });
+        }
+
+        // Event listeners
+        roboSend.addEventListener('click', sendMessage);
+        roboInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // Language toggle
+        const languageToggle = document.createElement('div');
+        languageToggle.className = 'language-toggle';
+        languageToggle.textContent = 'EN/LUG';
+        languageToggle.addEventListener('click', () => {
+            currentLanguage = currentLanguage === 'english' ? 'luganda' : 'english';
+            handleUserInput('change language');
+        });
+        roboChatbox.appendChild(languageToggle);
+    </script>
+</body>
+</html>
